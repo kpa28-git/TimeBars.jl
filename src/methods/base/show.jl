@@ -2,14 +2,15 @@
 $(TYPEDSIGNATURES)
 Display method for `StructVector{<:Bar}` table.
 """
-function Base.show(io::IO, ::MIME"text/plain", bars::StructArrays.StructVector{T}; tf=tf_ascii_dots) where {T<:Bar}
-	title = @sprintf "StructVector{%s} of %.3g Bars" nameof(T) length(bars)
+function Base.show(io::IO, ::MIME"text/plain", bars::StructArrays.StructVector{T}; ttb=text_table_borders__ascii_dots) where {T<:Bar}
+	title = @sprintf "%.3g %s" length(bars) nameof(T)
+	tf = TextTableFormat(borders=ttb)
 	pretty_table(io, StructArrays.components(bars);
-		tf=tf,
+		backend=:text,
+		table_format=tf,
 		title=title,
 		alignment=:l,
-		crop=:vertical,
-		vcrop_mode=:middle,
+		vertical_crop_mode=:middle,
 		show_omitted_cell_summary=false,
 	)
 end

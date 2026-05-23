@@ -18,17 +18,17 @@ function disallowmiss(T::Type, sa::StructArray)
 	StructArray{T}(nt)
 end
 
-"""
-$(TYPEDSIGNATURES)
-Construct a `StructArray{<:NamedTuple}`, where only the provided `data` are defined and the rest are undefined.
+# """
+# $(TYPEDSIGNATURES)
+# Construct a `StructArray{<:NamedTuple}`, where only the provided `data` are defined and the rest are undefined.
 
-This is not a `StructArray{<:NamedTuple}` constructor because we want to avoid type piracy.
-"""
-function emptysa(::Type{T}, data::Pair{Symbol, <:AbstractArray}...) where {T<:NamedTuple}
-	arr = StructArray{T}(undef, size(last(first(data))))
-	for (k,v) in data
-		getproperty(arr, k) .= v
-		# setproperty!(arr, k, v)
-	end
-	arr
-end
+# This is not a `StructArray{<:NamedTuple}` constructor because we want to avoid type piracy.
+# """
+# function emptysa(::Type{T}, data::Pair{Symbol, <:AbstractArray}...) where {T<:NamedTuple}
+# 	arr = StructArray{T}(undef, size(last(first(data))))
+# 	for (k,v) in data
+# 		getproperty(arr, k) .= v
+# 		# setproperty!(arr, k, v)
+# 	end
+# 	arr
+# end

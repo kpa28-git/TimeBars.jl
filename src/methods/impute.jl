@@ -172,6 +172,7 @@ Assumes single index bar type
 XXX - using a non-nothing `to` is untested.
 """
 function impute(bars::StructVector{T}, τ, to=nothing, imputer=imputer(T)) where {T<:SeriesBar}
+	isempty(bars) && return bars
 	nt = StructArrays.components(bars)
 	imputevec(nt, τ, to, imputer; idxkey=index(T)) |> StructVector{T}
 end
@@ -196,59 +197,59 @@ end
 
 
 
-"""
-$(TYPEDSIGNATURES)
-Expand outer index range.
-Assumes single index bar type.
-XXX - Deprecated
-"""
-function expandouter(sv::StructVector{T}, τ, to::Pair; idxkey) where {T<:NamedTuple}
-	idx = StructArrays.component(sv, idxkey)
-	if first(to) < first(idx)
-		newidx = index_range(first(to)=>first(idx), τ; excl_f=false)
-		sv = vcat(emptysa(T, idxkey=>newidx), sv)
-	end
-	if last(idx) < last(to)
-		newidx = index_range(last(idx)=>last(to), τ; excl_l=false)
-		sv = vcat(sv, emptysa(T, idxkey=>newidx))
-	end
-	sv
-end
+# """
+# $(TYPEDSIGNATURES)
+# Expand outer index range.
+# Assumes single index bar type.
+# XXX - Deprecated
+# """
+# function expandouter(sv::StructVector{T}, τ, to::Pair; idxkey) where {T<:NamedTuple}
+# 	idx = StructArrays.component(sv, idxkey)
+# 	if first(to) < first(idx)
+# 		newidx = index_range(first(to)=>first(idx), τ; excl_f=false)
+# 		sv = vcat(emptysa(T, idxkey=>newidx), sv)
+# 	end
+# 	if last(idx) < last(to)
+# 		newidx = index_range(last(idx)=>last(to), τ; excl_l=false)
+# 		sv = vcat(sv, emptysa(T, idxkey=>newidx))
+# 	end
+# 	sv
+# end
 
-"""
-$(TYPEDSIGNATURES)
-Do not expand outer index range. Used for dispatch.
-XXX - Deprecated
-"""
-expandouter(sa::StructArray, ::Any, ::Nothing; kwargs...) = sa
+# """
+# $(TYPEDSIGNATURES)
+# Do not expand outer index range. Used for dispatch.
+# XXX - Deprecated
+# """
+# expandouter(sa::StructArray, ::Any, ::Nothing; kwargs...) = sa
 
-"""
-$(TYPEDSIGNATURES)
-XXX - Deprecated
-"""
-function impute_old(bars::StructVector{T}, τ, to, imputer=imputer(T); idxkey=index(T)) where {T<:SeriesBar}
-	sa = imputevec(bars, τ, nothing, imputer; idxkey=idxkey)
-	sa = expandouter(sa, τ, to; idxkey=idxkey)
-	sa = Impute.impute(sa, imputer)
-	disallowmiss(T, sa)
-end
+# """
+# $(TYPEDSIGNATURES)
+# XXX - Deprecated
+# """
+# function impute_old(bars::StructVector{T}, τ, to, imputer=imputer(T); idxkey=index(T)) where {T<:SeriesBar}
+# 	sa = imputevec(bars, τ, nothing, imputer; idxkey=idxkey)
+# 	sa = expandouter(sa, τ, to; idxkey=idxkey)
+# 	sa = Impute.impute(sa, imputer)
+# 	disallowmiss(T, sa)
+# end
 
-"""
-$(TYPEDSIGNATURES)
-XXX - Deprecated
-"""
-function impute_old(bars::StructVector{T}, τ, method::Symbol, to=nothing; idxkey=index(T), rng=Random.default_rng()) where {T<:SeriesBar}
-	if method == :locf
-		imp = Impute.LOCF()
-	elseif method == :sub
-		imp = Impute.Substitute(; statistic=Impute.defaultstats)
-	elseif method == :srs
-		imp = Impute.SRS(; rng=rng)
-	else
-		imp = imputer(T)
-	end
-	impute_old(bars, τ, to, imp; idxkey=idxkey)
-end
+# """
+# $(TYPEDSIGNATURES)
+# XXX - Deprecated
+# """
+# function impute_old(bars::StructVector{T}, τ, method::Symbol, to=nothing; idxkey=index(T), rng=Random.default_rng()) where {T<:SeriesBar}
+# 	if method == :locf
+# 		imp = Impute.LOCF()
+# 	elseif method == :sub
+# 		imp = Impute.Substitute(; statistic=Impute.defaultstats)
+# 	elseif method == :srs
+# 		imp = Impute.SRS(; rng=rng)
+# 	else
+# 		imp = imputer(T)
+# 	end
+# 	impute_old(bars, τ, to, imp; idxkey=idxkey)
+# end
 
 # struct LocalSRS{R<:AbstractRNG} <: Impute.Imputor
 # 	rng::R

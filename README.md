@@ -1,7 +1,7 @@
 # TimeBars.jl
 
-## Purpose
-This package exists in order to satisfy the following requirements (that I haven't seen to be satisifed by other time series or general table packages):
+## Goals
+This package exists in order to attempt to satisfy the following requirements (that I haven't seen to be satisifed by other time series or general table packages):
 * fully inferred dispatch on whatever kind of table you want: write efficient methods to dispatch on tables with particular sets of columns
 * dispatch on particular sets of columns easily with good code reuse (ie using type inheritance or traits)
 * ability to work with different kinds of array storage formats
@@ -24,12 +24,12 @@ TimeBars.jl is for cases when the tables you are using have natural structure th
 TimeBars.jl offers element types attached to methods that work with `StructArray` / `StructVector` array types to give us the time series functionality that meet the above requirements.
 
 ## Install
-Install this package to your Julia project environment as you would any other package from a Git repo.
+Install this package to your project environment as you would any other unregistered package.
 
 From the Julia REPL:
 ```
 julia> ]
-(MyProject) pkg> add https://github.com/HaedronResearch/TimeBars.jl
+(MyProject) pkg> add https://github.com/kpa28-git/TimeBars.jl
 ```
 
 <!-- ## Overview -->
